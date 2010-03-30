@@ -150,7 +150,6 @@ $(CROSSTOOLS)/lib/gcc: $(WORK)/build-gcc-static $(WORK)/gcc-$(GCC_VERSION)
 		--build=$(HOST) --host=$(HOST) --target=$(TARGET) \
 		--disable-multilib --with-sysroot=$(CLFS) --disable-nls \
 		--without-headers --with-newlib --disable-decimal-float \
-		--enable-__cxa_atexit --enable-symvers=gnu \
 		--disable-libgomp --disable-libmudflap --disable-libssp \
 		--with-mpfr=$(CROSSTOOLS) --with-gmp=$(CROSSTOOLS) \
 		--disable-shared --disable-threads --enable-languages=c && \
@@ -172,8 +171,8 @@ $(WORK)/glibc-$(GLIBC_VERSION).tar.bz2:
 
 $(WORK)/glibc-ports-$(GLIBC_VERSION).tar.bz2:
 	wget -P $(WORK) -c ftp://ftp.gnu.org/gnu/glibc/glibc-ports-$(GLIBC_VERSION).tar.bz2
-$(WORK)/glibc-$(GLIBC_VERSION): $(WORK)/glibc-$(GLIBC_VERSION).tar.bz2 $(WORK)/glibc-ports-$(GLIBC_VERSION).tar.bz2
 
+$(WORK)/glibc-$(GLIBC_VERSION): $(WORK)/glibc-$(GLIBC_VERSION).tar.bz2 $(WORK)/glibc-ports-$(GLIBC_VERSION).tar.bz2
 	tar -C $(WORK) -xvjf $(WORK)/glibc-$(GLIBC_VERSION).tar.bz2
 	cd $(WORK)/glibc-$(GLIBC_VERSION) && \
 		tar xvjf $(WORK)/glibc-ports-$(GLIBC_VERSION).tar.bz2 && \
