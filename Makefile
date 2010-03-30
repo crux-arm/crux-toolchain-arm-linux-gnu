@@ -148,8 +148,9 @@ $(CROSSTOOLS)/lib/gcc: $(WORK)/build-gcc-static $(WORK)/gcc-$(GCC_VERSION)
 		AR=ar LDFLAGS="-Wl,-rpath,$(CROSSTOOLS)/lib" \
 		$(WORK)/gcc-$(GCC_VERSION)/configure --prefix=$(CROSSTOOLS) \
 		--build=$(HOST) --host=$(HOST) --target=$(TARGET) \
-		--disable-multilib --disable-nls \
-		--without-headers --enable-__cxa_atexit --enable-symvers=gnu --disable-decimal-float \
+		--disable-multilib --with-sysroot=$(CLFS) --disable-nls \
+		--without-headers --with-newlib --disable-decimal-float \
+		--enable-__cxa_atexit --enable-symvers=gnu \
 		--disable-libgomp --disable-libmudflap --disable-libssp \
 		--with-mpfr=$(CROSSTOOLS) --with-gmp=$(CROSSTOOLS) \
 		--disable-shared --disable-threads --enable-languages=c && \
