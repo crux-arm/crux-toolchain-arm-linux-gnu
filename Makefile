@@ -109,7 +109,7 @@ $(WORK)/binutils-$(BINUTILS_VERSION): $(WORK)/binutils-$(BINUTILS_VERSION).tar.b
 
 $(WORK)/build-binutils: $(WORK)/binutils-$(BINUTILS_VERSION)
 	mkdir -p $(WORK)/build-binutils
-	touch $(WORK)/build-binutils-build
+	touch $(WORK)/build-binutils
 
 $(CLFS)/usr/include/libiberty.h: $(WORK)/build-binutils
 	cd $(WORK)/build-binutils && \
@@ -117,7 +117,7 @@ $(CLFS)/usr/include/libiberty.h: $(WORK)/build-binutils
 		AR=ar AS=as \
 		$(WORK)/binutils-$(BINUTILS_VERSION)/configure --prefix=$(CROSSTOOLS) \
 		--host=$(HOST) --target=$(TARGET) --with-sysroot=$(CLFS) \
-		--disable-nls --enable-shared --disable-multilib && \
+		--disable-nls --enable-shared --disable-multilib --disable-werror && \
 		make configure-host && make && make install || exit 1
 	cp -va $(WORK)/binutils-$(BINUTILS_VERSION)/include/libiberty.h $(CLFS)/usr/include
 	touch $(CLFS)/usr/include/libiberty.h
