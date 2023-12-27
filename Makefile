@@ -7,15 +7,13 @@ include vars.mk
 .PHONY: all clean distclean
 
 all: linux-headers libgmp libmpfr binutils gcc-static glibc gcc-final test
-
 clean: linux-headers-clean libgmp-clean libmpfr-clean binutils-clean gcc-static-clean glibc-clean gcc-final-clean test-clean
-
 distclean: clean linux-headers-distclean libgmp-distclean libmpfr-distclean binutils-distclean gcc-static-distclean glibc-distclean gcc-final-distclean test-distclean
 
 
 # LINUX HEADERS
 $(WORK)/linux-$(KERNEL_HEADERS_VERSION).tar.bz2:
-	wget -P $(WORK) -c ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-$(KERNEL_HEADERS_VERSION).tar.bz2
+	wget -P $(WORK) -c https://mirrors.edge.kernel.org/pub/linux/kernel/v2.6/linux-$(KERNEL_HEADERS_VERSION).tar.bz2
 
 $(WORK)/linux-$(KERNEL_HEADERS_VERSION): $(WORK)/linux-$(KERNEL_HEADERS_VERSION).tar.bz2
 	tar -C $(WORK) -xvjf $(WORK)/linux-$(KERNEL_HEADERS_VERSION).tar.bz2
@@ -133,7 +131,7 @@ binutils-distclean: binutils-clean
 
 # GCC-STATIC
 $(WORK)/gcc-$(GCC_VERSION).tar.bz2:
-	wget -P $(WORK) -c ftp://sources.redhat.com/pub/gcc/releases/gcc-$(GCC_VERSION)/gcc-$(GCC_VERSION).tar.bz2
+	wget -P $(WORK) -c https://ftp.gnu.org/gnu/gcc/gcc-$(GCC_VERSION)/gcc-$(GCC_VERSION).tar.bz2
 
 $(WORK)/gcc-$(GCC_VERSION): $(WORK)/gcc-$(GCC_VERSION).tar.bz2
 	tar -C $(WORK) -xvjf $(WORK)/gcc-$(GCC_VERSION).tar.bz2
@@ -173,10 +171,9 @@ $(WORK)/glibc-$(GLIBC_VERSION).tar.bz2:
 $(WORK)/glibc-ports-$(GLIBC_VERSION).tar.bz2:
 	wget -P $(WORK) -c ftp://ftp.gnu.org/gnu/glibc/glibc-ports-$(GLIBC_VERSION).tar.bz2
 
-$(WORK)/glibc-$(GLIBC_VERSION): $(WORK)/glibc-$(GLIBC_VERSION).tar.bz2 $(WORK)/glibc-ports-$(GLIBC_VERSION).tar.bz2 $(WORK)/glibc-$(GLIBC_VERSION)-make382.patch
+$(WORK)/glibc-$(GLIBC_VERSION): $(WORK)/glibc-$(GLIBC_VERSION).tar.bz2 $(WORK)/glibc-ports-$(GLIBC_VERSION).tar.bz2
 	tar -C $(WORK) -xvjf $(WORK)/glibc-$(GLIBC_VERSION).tar.bz2
 	cd $(WORK)/glibc-$(GLIBC_VERSION) && \
-		patch -p1 -i $(WORK)/glibc-$(GLIBC_VERSION)-make382.patch && \
 		tar xvjf $(WORK)/glibc-ports-$(GLIBC_VERSION).tar.bz2 && \
 		mv glibc-ports-$(GLIBC_VERSION) ports && \
 		sed -e 's/-lgcc_eh//g' -i Makeconfig
