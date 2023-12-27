@@ -3,7 +3,7 @@
 #
 
 HOST = $(shell echo $$MACHTYPE | sed "s/$$(echo $$MACHTYPE | cut -d- -f2)/cross/")
-TARGET = arm-crux-linux-gnu
+TARGET = arm-linux-gnu
 
 PWD  = $(shell pwd)
 CLFS = $(PWD)/clfs
@@ -14,7 +14,7 @@ KERNEL_HEADERS_VERSION = 2.6.30.1
 LIBGMP_VERSION = 4.3.1
 LIBMPFR_VERSION = 2.4.2
 BINUTILS_VERSION = 2.19.1
-GCC_VERSION = 4.4.2
 GLIBC_VERSION = 2.10.1
+GCC_VERSION = 4.4.2
 
 # End of file
