@@ -20,9 +20,10 @@ jobs:
             uses: addnab/docker-run-action@v3
             with:
                 image: sepen/crux:2.6
-                # Create a bind mount from the current workspace to /opt/toolchain-arm-linux-gnu
+                # Create a bind mount from the current workspace to /opt/arm-linux-gnu
                 # github.workspace includes all of the code checked out from our current repo
                 # so anything done to this code will then be available to any following step
-                options: -v ${{ github.workspace }}:/opt/toolchain-arm-linux-gnu
+                options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
                 run: |
+                    cd /opt/arm-linux-gnu
                     make
