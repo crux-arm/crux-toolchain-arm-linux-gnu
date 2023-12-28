@@ -10,6 +10,7 @@ all: linux-headers libgmp libmpfr binutils gcc-static glibc gcc-final test
 clean: linux-headers-clean libgmp-clean libmpfr-clean binutils-clean gcc-static-clean glibc-clean gcc-final-clean test-clean
 distclean: clean linux-headers-distclean libgmp-distclean libmpfr-distclean binutils-distclean gcc-static-distclean glibc-distclean gcc-final-distclean test-distclean
 
+download: $(WORK)/linux-$(KERNEL_HEADERS_VERSION).tar.bz2 $(WORK)/gmp-$(LIBGMP_VERSION).tar.bz2 $(WORK)/mpfr-$(LIBMPFR_VERSION).tar.bz2 $(WORK)/binutils-$(BINUTILS_VERSION).tar.bz2 $(WORK)/gcc-$(GCC_VERSION).tar.bz2 $(WORK)/glibc-$(GLIBC_VERSION).tar.bz2 $(WORK)/glibc-ports-$(GLIBC_VERSION).tar.bz2
 
 # LINUX HEADERS
 $(WORK)/linux-$(KERNEL_HEADERS_VERSION).tar.bz2:
