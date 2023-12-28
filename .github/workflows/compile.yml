@@ -1,0 +1,28 @@
+name: compile
+
+on:
+  push:
+    branches:
+      - '2.6'
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+    compile:
+        name: Compile toolchain
+        runs-on: ubuntu-latest
+
+        steps:
+          - name: Check out the repo
+            uses: actions/checkout@v2
+
+          - name: Compile the toolchain with CRUX 2.6
+            uses: addnab/docker-run-action@v3
+            with:
+                image: sepen/crux:2.6
+                # Create a bind mount from the current workspace to /opt/toolchain-arm-linux-gnu
+                # github.workspace includes all of the code checked out from our current repo
+                # so anything done to this code will then be available to any following step
+                options: -v ${{ github.workspace }}:/opt/toolchain-arm-linux-gnu
+                run: |
+                    make
