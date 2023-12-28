@@ -35,7 +35,7 @@ jobs:
           - name: Build libgmp
             uses: addnab/docker-run-action@v3
             with:
-              image: sepen/crux:2.6
+                image: sepen/crux:2.6
                 options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
                 run: |
                     cd /opt/arm-linux-gnu
@@ -44,7 +44,7 @@ jobs:
           - name : Build libmpfr
             uses: addnab/docker-run-action@v3
             with:
-              image: sepen/crux:2.6
+                image: sepen/crux:2.6
                 options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
                 run: |
                     cd /opt/arm-linux-gnu
@@ -53,7 +53,7 @@ jobs:
           - name: Build binutils
             uses: addnab/docker-run-action@v3
             with:
-              image: sepen/crux:2.6
+                image: sepen/crux:2.6
                 options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
                 run: |
                     cd /opt/arm-linux-gnu
@@ -62,7 +62,7 @@ jobs:
           - name: Build gcc-static
             uses: addnab/docker-run-action@v3
             with:
-              image: sepen/crux:2.6
+                image: sepen/crux:2.6
                 options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
                 run: |
                     cd /opt/arm-linux-gnu
@@ -71,7 +71,7 @@ jobs:
           - name: Build glibc
             uses: addnab/docker-run-action@v3
             with:
-              image: sepen/crux:2.6
+                image: sepen/crux:2.6
                 options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
                 run: |
                     cd /opt/arm-linux-gnu
@@ -80,7 +80,7 @@ jobs:
           - name: Build gcc-final
             uses: addnab/docker-run-action@v3
             with:
-              image: sepen/crux:2.6
+                image: sepen/crux:2.6
                 options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
                 run: |
                     cd /opt/arm-linux-gnu
@@ -89,11 +89,8 @@ jobs:
           - name: Test
             uses: addnab/docker-run-action@v3
             with:
-              image: sepen/crux:2.6
+                image: sepen/crux:2.6
                 options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
                 run: |
                     cd /opt/arm-linux-gnu
                     make test
-
-
-
