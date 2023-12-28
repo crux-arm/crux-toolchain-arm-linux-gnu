@@ -16,6 +16,10 @@ jobs:
           - name: Check out the repo
             uses: actions/checkout@v2
 
+          - name: Download sources
+            run: |
+              make download
+
           - name: Compile the toolchain with CRUX 2.6
             uses: addnab/docker-run-action@v3
             with:
