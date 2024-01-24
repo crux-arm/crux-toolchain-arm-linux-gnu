@@ -23,95 +23,92 @@ jobs:
           - name: Build linux-headers
             uses: addnab/docker-run-action@v3
             with:
-                image: sepen/crux:3.7
-                # Create a bind mount from the current workspace to /opt/arm-linux-gnu
-                # github.workspace includes all of the code checked out from our current repo
-                # so anything done to this code will then be available to any following step
-                options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
-                run: |
-                    cd /opt/arm-linux-gnu
-                    make linux-headers
+              image: sepen/crux:3.7
+              # Create a bind mount from the current workspace to /opt/arm-linux-gnu
+              # github.workspace includes all of the code checked out from our current repo
+              # so anything done to this code will then be available to any following step
+              options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
+              run: |
+                cd /opt/arm-linux-gnu
+                make linux-headers
 
           - name: Build libgmp
             uses: addnab/docker-run-action@v3
             with:
               image: sepen/crux:3.7
-                options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
-                run: |
-                    cd /opt/arm-linux-gnu
-                    make libgmp
+              options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
+              run: |
+                cd /opt/arm-linux-gnu
+                make libgmp
 
           - name : Build libmpfr
             uses: addnab/docker-run-action@v3
             with:
               image: sepen/crux:3.7
-                options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
-                run: |
-                    cd /opt/arm-linux-gnu
-                    make libmpfr
+              options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
+              run: |
+                cd /opt/arm-linux-gnu
+                make libmpfr
 
           - name : Build libmpc
             uses: addnab/docker-run-action@v3
             with:
               image: sepen/crux:3.7
-                options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
-                run: |
-                    cd /opt/arm-linux-gnu
-                    make libmpc
+              options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
+              run: |
+                cd /opt/arm-linux-gnu
+                make libmpc
 
           - name: Build binutils
             uses: addnab/docker-run-action@v3
             with:
               image: sepen/crux:3.7
-                options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
-                run: |
-                    cd /opt/arm-linux-gnu
-                    make binutils
+              options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
+              run: |
+                cd /opt/arm-linux-gnu
+                make binutils
 
           - name: Build gcc-static
             uses: addnab/docker-run-action@v3
             with:
               image: sepen/crux:3.7
-                options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
-                run: |
-                    cd /opt/arm-linux-gnu
-                    make gcc-static
+              options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
+              run: |
+                cd /opt/arm-linux-gnu
+                make gcc-static
 
           - name: Build make
             uses: addnab/docker-run-action@v3
             with:
               image: sepen/crux:3.7
-                options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
-                run: |
-                    cd /opt/arm-linux-gnu
-                    make make
+              options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
+              run: |
+                cd /opt/arm-linux-gnu
+                make make
 
           - name: Build glibc
             uses: addnab/docker-run-action@v3
             with:
               image: sepen/crux:3.7
-                options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
-                run: |
-                    cd /opt/arm-linux-gnu
-                    make glibc
+              options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
+              run: |
+                cd /opt/arm-linux-gnu
+                make glibc
 
           - name: Build gcc-final
             uses: addnab/docker-run-action@v3
             with:
               image: sepen/crux:3.7
-                options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
-                run: |
-                    cd /opt/arm-linux-gnu
-                    make gcc-final
+              options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
+              run: |
+                cd /opt/arm-linux-gnu
+                make gcc-final
 
           - name: Test
             uses: addnab/docker-run-action@v3
             with:
               image: sepen/crux:3.7
-                options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
-                run: |
-                    cd /opt/arm-linux-gnu
-                    make test
-
-
-
+              options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
+              run: |
+                cd /opt/arm-linux-gnu
+                make test
