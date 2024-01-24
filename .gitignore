@@ -1,4 +1,6 @@
+.*~
 clfs
 crosstools
 work/*
+!work/*patch
 

@@ -8,8 +8,8 @@ on:
   workflow_dispatch:
 
 jobs:
-    compile:
-        name: Compile toolchain
+    build-2.6:
+        name: Build 2.6 toolchain
         runs-on: ubuntu-latest
 
         steps:
@@ -54,10 +54,10 @@ jobs:
             uses: addnab/docker-run-action@v3
             with:
               image: sepen/crux:2.6
-                options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
-                run: |
-                    cd /opt/arm-linux-gnu
-                    make binutils
+              options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
+              run: |
+                cd /opt/arm-linux-gnu
+                make binutils
 
           - name: Build gcc-static
             uses: addnab/docker-run-action@v3
