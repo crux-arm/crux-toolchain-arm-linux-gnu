@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-    build-3.7:
+    build-37:
         name: Build 3.7 toolchain
         runs-on: ubuntu-latest
 
