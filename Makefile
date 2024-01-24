@@ -53,7 +53,8 @@ download: \
 #
 
 $(WORK)/linux-$(KERNEL_HEADERS_VERSION).tar.bz2:
-	curl -sSL -o $(WORK)/linux-$(KERNEL_HEADERS_VERSION).tar.bz2 https://mirrors.edge.kernel.org/pub/linux/kernel/v3.x/linux-$(KERNEL_HEADERS_VERSION).tar.bz2
+	curl --retry 5 --retry-max-time 60 -sSL -o $(WORK)/linux-$(KERNEL_HEADERS_VERSION).tar.bz2 \
+		https://mirrors.edge.kernel.org/pub/linux/kernel/v3.x/linux-$(KERNEL_HEADERS_VERSION).tar.bz2
 
 $(WORK)/linux-$(KERNEL_HEADERS_VERSION): $(WORK)/linux-$(KERNEL_HEADERS_VERSION).tar.bz2
 	tar -C $(WORK) -xvf $(WORK)/linux-$(KERNEL_HEADERS_VERSION).tar.bz2
@@ -85,7 +86,8 @@ linux-headers-distclean: linux-headers-clean
 #
 
 $(WORK)/gmp-$(LIBGMP_VERSION).tar.xz:
-	curl -sSL -o $(WORK)/gmp-$(LIBGMP_VERSION).tar.xz https://gmplib.org/download/gmp/gmp-$(LIBGMP_VERSION).tar.xz
+	curl --retry 5 --retry-max-time 60 -sSL -o $(WORK)/gmp-$(LIBGMP_VERSION).tar.xz \
+		https://gmplib.org/download/gmp/gmp-$(LIBGMP_VERSION).tar.xz
 
 $(WORK)/gmp-$(LIBGMP_VERSION): $(WORK)/gmp-$(LIBGMP_VERSION).tar.xz
 	tar -C $(WORK) -xvf $(WORK)/gmp-$(LIBGMP_VERSION).tar.xz
@@ -125,7 +127,8 @@ libgmp-distclean: libgmp-clean
 #
 
 $(WORK)/mpfr-$(LIBMPFR_VERSION).tar.xz:
-	curl -sSL -o $(WORK)/mpfr-$(LIBMPFR_VERSION).tar.xz https://ftp.gnu.org/gnu/mpfr/mpfr-$(LIBMPFR_VERSION).tar.xz
+	curl --retry 5 --retry-max-time 60 -sSL -o $(WORK)/mpfr-$(LIBMPFR_VERSION).tar.xz \
+		https://ftp.gnu.org/gnu/mpfr/mpfr-$(LIBMPFR_VERSION).tar.xz
 
 $(WORK)/mpfr-$(LIBMPFR_VERSION): $(WORK)/mpfr-$(LIBMPFR_VERSION).tar.xz
 	tar -C $(WORK) -xvf $(WORK)/mpfr-$(LIBMPFR_VERSION).tar.xz
@@ -166,7 +169,8 @@ libmpfr-distclean: libmpfr-clean
 #
 
 $(WORK)/mpc-$(LIBMPC_VERSION).tar.gz:
-	curl -sSL -o $(WORK)/mpc-$(LIBMPC_VERSION).tar.gz https://ftp.gnu.org/gnu/mpc/mpc-$(LIBMPC_VERSION).tar.gz
+	curl --retry 5 --retry-max-time 60 -sSL -o $(WORK)/mpc-$(LIBMPC_VERSION).tar.gz \
+		https://ftp.gnu.org/gnu/mpc/mpc-$(LIBMPC_VERSION).tar.gz
 
 $(WORK)/mpc-$(LIBMPC_VERSION): $(WORK)/mpc-$(LIBMPC_VERSION).tar.gz
 	tar -C $(WORK) -xvf $(WORK)/mpc-$(LIBMPC_VERSION).tar.gz
@@ -208,7 +212,8 @@ libmpc-distclean: libmpc-clean
 #
 
 $(WORK)/binutils-$(BINUTILS_VERSION).tar.bz2:
-	curl -sSL -o $(WORK)/binutils-$(BINUTILS_VERSION).tar.bz2  https://ftp.gnu.org/gnu/binutils/binutils-$(BINUTILS_VERSION).tar.bz2
+	curl --retry 5 --retry-max-time 60 -sSL -o $(WORK)/binutils-$(BINUTILS_VERSION).tar.bz2 \
+		https://ftp.gnu.org/gnu/binutils/binutils-$(BINUTILS_VERSION).tar.bz2
 
 $(WORK)/binutils-$(BINUTILS_VERSION): $(WORK)/binutils-$(BINUTILS_VERSION).tar.bz2
 	tar -C $(WORK) -xvf $(WORK)/binutils-$(BINUTILS_VERSION).tar.bz2
@@ -258,7 +263,8 @@ binutils-distclean: binutils-clean
 #
 
 $(WORK)/gcc-$(GCC_VERSION).tar.bz2:
-	curl -sSL -o $(WORK)/gcc-$(GCC_VERSION).tar.bz2  https://ftp.gnu.org/gnu/gcc/gcc-$(GCC_VERSION)/gcc-$(GCC_VERSION).tar.bz2
+	curl --retry 5 --retry-max-time 60 -sSL -o $(WORK)/gcc-$(GCC_VERSION).tar.bz2 \
+		https://ftp.gnu.org/gnu/gcc/gcc-$(GCC_VERSION)/gcc-$(GCC_VERSION).tar.bz2
 
 $(WORK)/gcc-$(GCC_VERSION): $(WORK)/gcc-$(GCC_VERSION).tar.bz2
 	tar -C $(WORK) -xvf $(WORK)/gcc-$(GCC_VERSION).tar.bz2
@@ -319,7 +325,8 @@ gcc-static-distclean: gcc-static-clean
 #
 
 $(WORK)/make-$(MAKE_VERSION).tar.gz:
-	curl -sSL -o $(WORK)/make-$(MAKE_VERSION).tar.gz https://ftp.gnu.org/gnu/make/make-$(MAKE_VERSION).tar.gz
+	curl --retry 5 --retry-max-time 60 -sSL -o $(WORK)/make-$(MAKE_VERSION).tar.gz \
+		https://ftp.gnu.org/gnu/make/make-$(MAKE_VERSION).tar.gz
 
 $(WORK)/make-$(MAKE_VERSION): $(WORK)/make-$(MAKE_VERSION).tar.gz
 	tar -C $(WORK) -xvf $(WORK)/make-$(MAKE_VERSION).tar.gz
@@ -356,10 +363,12 @@ make-distclean:
 #
 
 $(WORK)/glibc-$(GLIBC_VERSION).tar.bz2:
-	curl -sSL -o $(WORK)/glibc-$(GLIBC_VERSION).tar.bz2  https://ftp.gnu.org/gnu/glibc/glibc-$(GLIBC_VERSION).tar.bz2
+	curl --retry 5 --retry-max-time 60 -sSL -o $(WORK)/glibc-$(GLIBC_VERSION).tar.bz2  \
+		https://ftp.gnu.org/gnu/glibc/glibc-$(GLIBC_VERSION).tar.bz2
 
 $(WORK)/glibc-ports-$(GLIBC_PORTS_VERSION).tar.bz2:
-	curl -sSL -o $(WORK)/glibc-ports-$(GLIBC_PORTS_VERSION).tar.bz2 https://ftp.gnu.org/gnu/glibc/glibc-ports-$(GLIBC_PORTS_VERSION).tar.bz2
+	curl --retry 5 --retry-max-time 60 -sSL -o $(WORK)/glibc-ports-$(GLIBC_PORTS_VERSION).tar.bz2 \
+		https://ftp.gnu.org/gnu/glibc/glibc-ports-$(GLIBC_PORTS_VERSION).tar.bz2
 
 $(WORK)/glibc-$(GLIBC_VERSION): $(WORK)/glibc-$(GLIBC_VERSION).tar.bz2 $(WORK)/glibc-ports-$(GLIBC_PORTS_VERSION).tar.bz2 $(WORK)/glibc-fix-versions-in-configure.patch
 	tar -C $(WORK) -xvf $(WORK)/glibc-$(GLIBC_VERSION).tar.bz2
