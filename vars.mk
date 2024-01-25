@@ -20,8 +20,10 @@ HOST = $(shell bash -c 'echo $$MACHTYPE' | sed 's/-[^-]*/-cross/')
 #
 # directories
 #
-CLFS = $(shell pwd)/clfs
-CROSSTOOLS = $(shell pwd)/crosstools
+
+# Do not change CLFS and CROSSTOOLS location if you plan to release the resulting toolchain
+CLFS = /opt/$(TARGET)/clfs
+CROSSTOOLS = /opt/$(TARGET)/crosstools
 WORK = $(shell pwd)/work
 
 # -----------------------------------------------------------------------
