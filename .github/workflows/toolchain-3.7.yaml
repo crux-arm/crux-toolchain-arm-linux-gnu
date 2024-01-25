@@ -1,0 +1,139 @@
+name: toolchain-3.7
+
+on:
+  push:
+    branches:
+      - '3.7'
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build 3.7 toolchain
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v4
+
+      - name: Setup toolchain vars.mk
+        run: |
+          sed 's|^CLFS.*|CLFS = /opt/arm-linux-gnu/clfs|' -i vars.mk
+          sed 's|^CROSSTOOLS.*|CROSSTOOLS = /opt/arm-linux-gnu/crosstools|' -i vars.mk
+
+      - name: Download source files
+        run: |
+          make download
+
+      - name: Build linux-headers
+        uses: addnab/docker-run-action@v3
+        with:
+          image: sepen/crux:3.7
+          # Create a bind mount from the current workspace to /opt/workspace
+          # github.workspace includes all of the code checked out from our current repo
+          # so anything done to this code will then be available to any following step
+          options: -v ${{ github.workspace }}:/opt/workspace
+          run: |
+            cd /opt/workspace
+            make linux-headers
+
+      - name: Build libgmp
+        uses: addnab/docker-run-action@v3
+        with:
+          image: sepen/crux:3.7
+          options: -v ${{ github.workspace }}:/opt/workspace
+          run: |
+            cd /opt/workspace
+            make libgmp
+
+      - name : Build libmpfr
+        uses: addnab/docker-run-action@v3
+        with:
+          image: sepen/crux:3.7
+          options: -v ${{ github.workspace }}:/opt/workspace
+          run: |
+            cd /opt/workspace
+            make libmpfr
+
+      - name : Build libmpc
+        uses: addnab/docker-run-action@v3
+        with:
+          image: sepen/crux:3.7
+          options: -v ${{ github.workspace }}:/opt/workspace
+          run: |
+            cd /opt/workspace
+            make libmpc
+
+      - name: Build binutils
+        uses: addnab/docker-run-action@v3
+        with:
+          image: sepen/crux:3.7
+          options: -v ${{ github.workspace }}:/opt/workspace
+          run: |
+            cd /opt/workspace
+            make binutils
+
+      - name: Build gcc-static
+        uses: addnab/docker-run-action@v3
+        with:
+          image: sepen/crux:3.7
+          options: -v ${{ github.workspace }}:/opt/workspace
+          run: |
+            cd /opt/workspace
+            make gcc-static
+
+      - name: Build make
+        uses: addnab/docker-run-action@v3
+        with:
+          image: sepen/crux:3.7
+          options: -v ${{ github.workspace }}:/opt/workspace
+          run: |
+            cd /opt/workspace
+            make make
+
+      - name: Build glibc
+        uses: addnab/docker-run-action@v3
+        with:
+          image: sepen/crux:3.7
+          options: -v ${{ github.workspace }}:/opt/workspace
+          run: |
+            cd /opt/workspace
+            make glibc
+
+      - name: Build gcc-final
+        uses: addnab/docker-run-action@v3
+        with:
+          image: sepen/crux:3.7
+          options: -v ${{ github.workspace }}:/opt/workspace
+          run: |
+            cd /opt/workspace
+            make gcc-final
+
+      - name: Test toolchain
+        uses: addnab/docker-run-action@v3
+        with:
+          image: sepen/crux:3.7
+          options: -v ${{ github.workspace }}:/opt/workspace
+          run: |
+            cd /opt/workspace
+            make test
+
+      - name: Package toolchain
+        uses: addnab/docker-run-action@v3
+        with:
+          image: sepen/crux:3.7
+          options: -v ${{ github.workspace }}:/opt/workspace
+          run: |
+            cd /opt/workspace
+            mkdir release
+            tar cvJf release/crux-toolchain-arm-linux-gnu-3.7-$(date +'%Y%m%d%H%M).tar.xz /opt/arm-linux-gnu
+
+      - name: Release toolchain
+        uses: burnett01/rsync-deployments@6.0.0
+        with:
+          switches: -avz
+          path: release/
+          remote_path: /home/frs/project/crux-arm/toolchain/
+          remote_host: frs.sourceforge.net
+          remote_user: sepen
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY }} 
