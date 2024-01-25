@@ -87,7 +87,7 @@ linux-headers-distclean: linux-headers-clean
 
 $(WORK)/gmp-$(LIBGMP_VERSION).tar.xz:
 	curl --retry 5 --retry-max-time 60 -sSL -o $(WORK)/gmp-$(LIBGMP_VERSION).tar.xz \
-		https://gmplib.org/download/gmp/gmp-$(LIBGMP_VERSION).tar.xz
+		https://ftp.gnu.org/gnu/gmp/gmp-$(LIBGMP_VERSION).tar.xz
 
 $(WORK)/gmp-$(LIBGMP_VERSION): $(WORK)/gmp-$(LIBGMP_VERSION).tar.xz
 	tar -C $(WORK) -xvf $(WORK)/gmp-$(LIBGMP_VERSION).tar.xz
