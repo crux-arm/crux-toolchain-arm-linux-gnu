@@ -20,6 +20,7 @@ jobs:
         run: |
           sed 's|^CLFS.*|CLFS = /opt/arm-linux-gnu/clfs|' -i vars.mk
           sed 's|^CROSSTOOLS.*|CROSSTOOLS = /opt/arm-linux-gnu/crosstools|' -i vars.mk
+          mkdir /tmp/arm-linux-gnu
 
       - name: Download source files
         run: |
@@ -32,7 +33,9 @@ jobs:
           # Create a bind mount from the current workspace to /opt/workspace
           # github.workspace includes all of the code checked out from our current repo
           # so anything done to this code will then be available to any following step
-          options: -v ${{ github.workspace }}:/opt/workspace
+          # In addition create a bind mount to /opt/arm-linux-gnu to allow sharing
+          # and persist data between Makefile steps, otherwise deps won't work
+          options: -v ${{ github.workspace }}:/opt/workspace -v /tmp/arm-linux-gnu:/opt/arm-linux-gnu
           run: |
             cd /opt/workspace
             make linux-headers
@@ -41,7 +44,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: sepen/crux:3.7
-          options: -v ${{ github.workspace }}:/opt/workspace
+          options: -v ${{ github.workspace }}:/opt/workspace -v /tmp/arm-linux-gnu:/opt/arm-linux-gnu
           run: |
             cd /opt/workspace
             make libgmp
@@ -50,7 +53,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: sepen/crux:3.7
-          options: -v ${{ github.workspace }}:/opt/workspace
+          options: -v ${{ github.workspace }}:/opt/workspace -v /tmp/arm-linux-gnu:/opt/arm-linux-gnu
           run: |
             cd /opt/workspace
             make libmpfr
@@ -59,7 +62,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: sepen/crux:3.7
-          options: -v ${{ github.workspace }}:/opt/workspace
+          options: -v ${{ github.workspace }}:/opt/workspace -v /tmp/arm-linux-gnu:/opt/arm-linux-gnu
           run: |
             cd /opt/workspace
             make libmpc
@@ -68,7 +71,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: sepen/crux:3.7
-          options: -v ${{ github.workspace }}:/opt/workspace
+          options: -v ${{ github.workspace }}:/opt/workspace -v /tmp/arm-linux-gnu:/opt/arm-linux-gnu
           run: |
             cd /opt/workspace
             make binutils
@@ -77,7 +80,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: sepen/crux:3.7
-          options: -v ${{ github.workspace }}:/opt/workspace
+          options: -v ${{ github.workspace }}:/opt/workspace -v /tmp/arm-linux-gnu:/opt/arm-linux-gnu
           run: |
             cd /opt/workspace
             make gcc-static
@@ -86,7 +89,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: sepen/crux:3.7
-          options: -v ${{ github.workspace }}:/opt/workspace
+          options: -v ${{ github.workspace }}:/opt/workspace -v /tmp/arm-linux-gnu:/opt/arm-linux-gnu
           run: |
             cd /opt/workspace
             make make
@@ -95,7 +98,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: sepen/crux:3.7
-          options: -v ${{ github.workspace }}:/opt/workspace
+          options: -v ${{ github.workspace }}:/opt/workspace -v /tmp/arm-linux-gnu:/opt/arm-linux-gnu
           run: |
             cd /opt/workspace
             make glibc
@@ -104,7 +107,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: sepen/crux:3.7
-          options: -v ${{ github.workspace }}:/opt/workspace
+          options: -v ${{ github.workspace }}:/opt/workspace -v /tmp/arm-linux-gnu:/opt/arm-linux-gnu
           run: |
             cd /opt/workspace
             make gcc-final
@@ -113,7 +116,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: sepen/crux:3.7
-          options: -v ${{ github.workspace }}:/opt/workspace
+          options: -v ${{ github.workspace }}:/opt/workspace -v /tmp/arm-linux-gnu:/opt/arm-linux-gnu
           run: |
             cd /opt/workspace
             make test
@@ -122,7 +125,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: sepen/crux:3.7
-          options: -v ${{ github.workspace }}:/opt/workspace
+          options: -v ${{ github.workspace }}:/opt/workspace -v /tmp/arm-linux-gnu:/opt/arm-linux-gnu
           run: |
             cd /opt/workspace
             mkdir release

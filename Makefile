@@ -506,7 +506,7 @@ $(WORK)/test: $(WORK)/test.c
 	touch $(WORK)/test
 
 .PHONY: test
-test: $(WORK)/test
+test: gcc-final $(WORK)/test
 
 .PHONY: test-clean
 test-clean:
