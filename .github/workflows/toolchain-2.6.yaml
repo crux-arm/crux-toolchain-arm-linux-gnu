@@ -108,7 +108,7 @@ jobs:
           run: |
             cd /opt/workspace
             mkdir release
-            tar cvJf release/crux-toolchain-arm-linux-gnu-2.6-$(date +'%Y%m%d%H%M).tar.xz /opt/arm-linux-gnu
+            tar cvJf release/crux-toolchain-arm-linux-gnu-2.6-$(date +'%Y%m%d%H%M').tar.xz /opt/arm-linux-gnu
 
       - name: Release toolchain
         uses: burnett01/rsync-deployments@6.0.0

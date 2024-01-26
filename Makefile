@@ -3,6 +3,9 @@
 # toolchain-arm-linux-gnu/Makefile
 #
 
+
+CURL_CMD = curl -sSL --retry 5 --retry-max-time 60
+
 ifneq ("$(wildcard vars.mk)", "")
 include vars.mk
 endif
@@ -53,7 +56,7 @@ download: \
 #
 
 $(WORK)/linux-$(KERNEL_HEADERS_VERSION).tar.bz2:
-	curl --retry 5 --retry-max-time 60 -sSL -o $(WORK)/linux-$(KERNEL_HEADERS_VERSION).tar.bz2 \
+	$(CURL_CMD) -o $(WORK)/linux-$(KERNEL_HEADERS_VERSION).tar.bz2 \
 		https://mirrors.edge.kernel.org/pub/linux/kernel/v3.x/linux-$(KERNEL_HEADERS_VERSION).tar.bz2
 
 $(WORK)/linux-$(KERNEL_HEADERS_VERSION): $(WORK)/linux-$(KERNEL_HEADERS_VERSION).tar.bz2
@@ -86,7 +89,7 @@ linux-headers-distclean: linux-headers-clean
 #
 
 $(WORK)/gmp-$(LIBGMP_VERSION).tar.xz:
-	curl --retry 5 --retry-max-time 60 -sSL -o $(WORK)/gmp-$(LIBGMP_VERSION).tar.xz \
+	$(CURL_CMD) -o $(WORK)/gmp-$(LIBGMP_VERSION).tar.xz \
 		https://ftp.gnu.org/gnu/gmp/gmp-$(LIBGMP_VERSION).tar.xz
 
 $(WORK)/gmp-$(LIBGMP_VERSION): $(WORK)/gmp-$(LIBGMP_VERSION).tar.xz
@@ -107,7 +110,8 @@ $(CROSSTOOLS)/lib/libgmp.so: $(WORK)/build-libgmp
 			--build=$(HOST) \
 			--prefix=$(CROSSTOOLS) && \
 		make && \
-		make install
+		make install && \
+		rm -rf $(CROSSTOOLS)/share
 	touch $(CROSSTOOLS)/lib/libgmp.so
 
 .PHONY: libgmp
@@ -127,7 +131,7 @@ libgmp-distclean: libgmp-clean
 #
 
 $(WORK)/mpfr-$(LIBMPFR_VERSION).tar.xz:
-	curl --retry 5 --retry-max-time 60 -sSL -o $(WORK)/mpfr-$(LIBMPFR_VERSION).tar.xz \
+	$(CURL_CMD) -o $(WORK)/mpfr-$(LIBMPFR_VERSION).tar.xz \
 		https://ftp.gnu.org/gnu/mpfr/mpfr-$(LIBMPFR_VERSION).tar.xz
 
 $(WORK)/mpfr-$(LIBMPFR_VERSION): $(WORK)/mpfr-$(LIBMPFR_VERSION).tar.xz
@@ -149,7 +153,8 @@ $(CROSSTOOLS)/lib/libmpfr.so: $(WORK)/build-libmpfr
 			--enable-shared \
 			--with-gmp=$(CROSSTOOLS) && \
 		make && \
-		make install
+		make install && \
+		rm -rf $(CROSSTOOLS)/share
 	touch $(CROSSTOOLS)/lib/libmpfr.so
 
 .PHONY: libmpfr
@@ -169,7 +174,7 @@ libmpfr-distclean: libmpfr-clean
 #
 
 $(WORK)/mpc-$(LIBMPC_VERSION).tar.gz:
-	curl --retry 5 --retry-max-time 60 -sSL -o $(WORK)/mpc-$(LIBMPC_VERSION).tar.gz \
+	$(CURL_CMD) -o $(WORK)/mpc-$(LIBMPC_VERSION).tar.gz \
 		https://ftp.gnu.org/gnu/mpc/mpc-$(LIBMPC_VERSION).tar.gz
 
 $(WORK)/mpc-$(LIBMPC_VERSION): $(WORK)/mpc-$(LIBMPC_VERSION).tar.gz
@@ -212,7 +217,7 @@ libmpc-distclean: libmpc-clean
 #
 
 $(WORK)/binutils-$(BINUTILS_VERSION).tar.bz2:
-	curl --retry 5 --retry-max-time 60 -sSL -o $(WORK)/binutils-$(BINUTILS_VERSION).tar.bz2 \
+	$(CURL_CMD) -o $(WORK)/binutils-$(BINUTILS_VERSION).tar.bz2 \
 		https://ftp.gnu.org/gnu/binutils/binutils-$(BINUTILS_VERSION).tar.bz2
 
 $(WORK)/binutils-$(BINUTILS_VERSION): $(WORK)/binutils-$(BINUTILS_VERSION).tar.bz2
@@ -242,7 +247,8 @@ $(CLFS)/usr/include/libiberty.h: $(WORK)/build-binutils
 			--disable-werror && \
 		make configure-host && \
 		make && \
-		make install
+		make install && \
+		rm -rf $(CROSSTOOLS)/share
 	cp -va $(WORK)/binutils-$(BINUTILS_VERSION)/include/libiberty.h $(CLFS)/usr/include
 	touch $(CLFS)/usr/include/libiberty.h
 
@@ -263,7 +269,7 @@ binutils-distclean: binutils-clean
 #
 
 $(WORK)/gcc-$(GCC_VERSION).tar.bz2:
-	curl --retry 5 --retry-max-time 60 -sSL -o $(WORK)/gcc-$(GCC_VERSION).tar.bz2 \
+	$(CURL_CMD) -o $(WORK)/gcc-$(GCC_VERSION).tar.bz2 \
 		https://ftp.gnu.org/gnu/gcc/gcc-$(GCC_VERSION)/gcc-$(GCC_VERSION).tar.bz2
 
 $(WORK)/gcc-$(GCC_VERSION): $(WORK)/gcc-$(GCC_VERSION).tar.bz2
@@ -325,7 +331,7 @@ gcc-static-distclean: gcc-static-clean
 #
 
 $(WORK)/make-$(MAKE_VERSION).tar.gz:
-	curl --retry 5 --retry-max-time 60 -sSL -o $(WORK)/make-$(MAKE_VERSION).tar.gz \
+	$(CURL_CMD) -o $(WORK)/make-$(MAKE_VERSION).tar.gz \
 		https://ftp.gnu.org/gnu/make/make-$(MAKE_VERSION).tar.gz
 
 $(WORK)/make-$(MAKE_VERSION): $(WORK)/make-$(MAKE_VERSION).tar.gz
@@ -363,11 +369,11 @@ make-distclean:
 #
 
 $(WORK)/glibc-$(GLIBC_VERSION).tar.bz2:
-	curl --retry 5 --retry-max-time 60 -sSL -o $(WORK)/glibc-$(GLIBC_VERSION).tar.bz2  \
+	$(CURL_CMD) -o $(WORK)/glibc-$(GLIBC_VERSION).tar.bz2  \
 		https://ftp.gnu.org/gnu/glibc/glibc-$(GLIBC_VERSION).tar.bz2
 
 $(WORK)/glibc-ports-$(GLIBC_PORTS_VERSION).tar.bz2:
-	curl --retry 5 --retry-max-time 60 -sSL -o $(WORK)/glibc-ports-$(GLIBC_PORTS_VERSION).tar.bz2 \
+	$(CURL_CMD) -o $(WORK)/glibc-ports-$(GLIBC_PORTS_VERSION).tar.bz2 \
 		https://ftp.gnu.org/gnu/glibc/glibc-ports-$(GLIBC_PORTS_VERSION).tar.bz2
 
 $(WORK)/glibc-$(GLIBC_VERSION): $(WORK)/glibc-$(GLIBC_VERSION).tar.bz2 $(WORK)/glibc-ports-$(GLIBC_PORTS_VERSION).tar.bz2 $(WORK)/glibc-fix-versions-in-configure.patch
@@ -398,10 +404,10 @@ $(CLFS)/usr/lib/libc.so: $(WORK)/build-glibc $(WORK)/glibc-$(GLIBC_VERSION)
 		AR="$(TARGET)-ar" \
 		RANLIB="$(TARGET)-ranlib" \
 		$(WORK)/glibc-$(GLIBC_VERSION)/configure \
-			--prefix=/usr \
-			--libexecdir=/usr/lib/glibc \
 			--host=$(TARGET) \
 			--build=$(HOST) \
+			--prefix=/usr \
+			--libexecdir=/usr/lib/glibc \
 			--disable-profile \
 			--enable-add-ons \
 			--with-tls \
@@ -437,17 +443,18 @@ $(WORK)/build-gcc-final: $(WORK)/gcc-$(GCC_VERSION)
 $(CLFS)/lib/gcc: $(WORK)/build-gcc-final $(WORK)/gcc-$(GCC_VERSION)
 	@echo "[`date +'%F %T'`] Building gcc-final"
 	cd $(WORK)/build-gcc-final && \
-		export PATH=$$PATH:$(CROSSTOOLS)/bin && \
+		export PATH=$(CROSSTOOLS)/bin:$$PATH && \
 		unset CC && \
 		unset CXXFLAGS && \
 		CFLAGS='-fgnu89-inline' \
 		AR=ar \
 		LDFLAGS="-Wl,-rpath,$(CROSSTOOLS)/lib" \
 		$(WORK)/gcc-$(GCC_VERSION)/configure \
-			--prefix=$(CROSSTOOLS) \
 			--build=$(HOST) \
 			--host=$(HOST) \
 			--target=$(TARGET) \
+			--prefix=$(CROSSTOOLS) \
+			--libexecdir=$(CROSSTOOLS)/lib \
 			--with-sysroot=$(CLFS) \
 			--with-gmp=$(CROSSTOOLS) \
 			--with-mpfr=$(CROSSTOOLS) \
@@ -470,8 +477,6 @@ $(CLFS)/lib/gcc: $(WORK)/build-gcc-final $(WORK)/gcc-$(GCC_VERSION)
 		make install
 	touch $(CLFS)/lib/gcc
 
-#make AS_FOR_TARGET="$(TARGET)-as" LD_FOR_TARGET="$(TARGET)-ld" && \
-
 .PHONY: gcc-final
 gcc-final: libgmp libmpfr glibc $(CLFS)/lib/gcc
 
@@ -490,7 +495,7 @@ gcc-final-distclean: gcc-final-clean
 
 $(WORK)/test: $(WORK)/test.c
 	@echo "[`date +'%F %T'`] Testing toolchain"
-	export PATH=$$PATH:$(CROSSTOOLS)/bin && \
+	export PATH=$(CROSSTOOLS)/bin:$$PATH && \
 	unset CFLAGS && \
 	unset CXXFLAGS && \
 	unset CC && \
@@ -501,7 +506,7 @@ $(WORK)/test: $(WORK)/test.c
 	touch $(WORK)/test
 
 .PHONY: test
-test: gcc-final $(WORK)/test
+test: $(WORK)/test
 
 .PHONY: test-clean
 test-clean:
