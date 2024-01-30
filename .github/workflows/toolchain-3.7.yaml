@@ -108,19 +108,20 @@ jobs:
           run: |
             make test -C /opt/arm-linux-gnu
 
-      - name: Package toolchain
+      - name: Release toolchain
         uses: addnab/docker-run-action@v3
         with:
           image: sepen/crux:3.7
           options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
           run: |
-            tar cvJf /opt/arm-linux-gnu/crux-toolchain-arm-linux-gnu-3.7-$(date +'%Y%m%d%H%M').tar.xz /opt/arm-linux-gnu/crosstools /opt/arm-linux-gnu/clfs
+            mkdir /opt/arm-linux-gnu/release
+            tar cvJf /opt/arm-linux-gnu/release/crux-toolchain-arm-linux-gnu-3.7-$(date +'%Y%m%d%H%M').tar.xz /opt/arm-linux-gnu/crosstools /opt/arm-linux-gnu/clfs
 
-      - name: Release toolchain
+      - name: Upload toolchain
         uses: burnett01/rsync-deployments@6.0.0
         with:
           switches: -avz
-          path: /tmp/release/
+          path: release/
           remote_path: /home/frs/project/crux-arm/toolchain/
           remote_host: frs.sourceforge.net
           remote_user: sepen
