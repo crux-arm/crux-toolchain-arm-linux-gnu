@@ -20,7 +20,6 @@ jobs:
         run: |
           sed 's|^CLFS.*|CLFS = /opt/arm-linux-gnu/clfs|' -i vars.mk
           sed 's|^CROSSTOOLS.*|CROSSTOOLS = /opt/arm-linux-gnu/crosstools|' -i vars.mk
-          mkdir /tmp/arm-linux-gnu
 
       - name: Download source files
         run: |
@@ -30,112 +29,98 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: sepen/crux:3.7
-          # Create a bind mount from the current workspace to /opt/workspace
+          # Create a bind mount from the current workspace to /opt/arm-linux-gnu
           # github.workspace includes all of the code checked out from our current repo
           # so anything done to this code will then be available to any following step
-          # In addition create a bind mount to /opt/arm-linux-gnu to allow sharing
-          # and persist data between Makefile steps, otherwise deps won't work
-          options: -v ${{ github.workspace }}:/opt/workspace -v /tmp/arm-linux-gnu:/opt/arm-linux-gnu
+          options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
           run: |
-            cd /opt/workspace
-            make linux-headers
+            make linux-headers -C /opt/arm-linux-gnu
 
       - name: Build libgmp
         uses: addnab/docker-run-action@v3
         with:
           image: sepen/crux:3.7
-          options: -v ${{ github.workspace }}:/opt/workspace -v /tmp/arm-linux-gnu:/opt/arm-linux-gnu
+          options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
           run: |
-            cd /opt/workspace
-            make libgmp
+            make libgmp -C /opt/arm-linux-gnu
 
       - name : Build libmpfr
         uses: addnab/docker-run-action@v3
         with:
           image: sepen/crux:3.7
-          options: -v ${{ github.workspace }}:/opt/workspace -v /tmp/arm-linux-gnu:/opt/arm-linux-gnu
+          options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
           run: |
-            cd /opt/workspace
-            make libmpfr
+            make libmpfr -C /opt/arm-linux-gnu
 
       - name : Build libmpc
         uses: addnab/docker-run-action@v3
         with:
           image: sepen/crux:3.7
-          options: -v ${{ github.workspace }}:/opt/workspace -v /tmp/arm-linux-gnu:/opt/arm-linux-gnu
+          options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
           run: |
-            cd /opt/workspace
-            make libmpc
+            make libmpc -C /opt/arm-linux-gnu
 
       - name: Build binutils
         uses: addnab/docker-run-action@v3
         with:
           image: sepen/crux:3.7
-          options: -v ${{ github.workspace }}:/opt/workspace -v /tmp/arm-linux-gnu:/opt/arm-linux-gnu
+          options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
           run: |
-            cd /opt/workspace
-            make binutils
+            make binutils -C /opt/arm-linux-gnu
 
       - name: Build gcc-static
         uses: addnab/docker-run-action@v3
         with:
           image: sepen/crux:3.7
-          options: -v ${{ github.workspace }}:/opt/workspace -v /tmp/arm-linux-gnu:/opt/arm-linux-gnu
+          options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
           run: |
-            cd /opt/workspace
-            make gcc-static
+            make gcc-static -C /opt/arm-linux-gnu
 
       - name: Build make
         uses: addnab/docker-run-action@v3
         with:
           image: sepen/crux:3.7
-          options: -v ${{ github.workspace }}:/opt/workspace -v /tmp/arm-linux-gnu:/opt/arm-linux-gnu
+          options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
           run: |
-            cd /opt/workspace
-            make make
+            make make -C /opt/arm-linux-gnu
 
       - name: Build glibc
         uses: addnab/docker-run-action@v3
         with:
           image: sepen/crux:3.7
-          options: -v ${{ github.workspace }}:/opt/workspace -v /tmp/arm-linux-gnu:/opt/arm-linux-gnu
+          options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
           run: |
-            cd /opt/workspace
-            make glibc
+            make glibc -C /opt/arm-linux-gnu
 
       - name: Build gcc-final
         uses: addnab/docker-run-action@v3
         with:
           image: sepen/crux:3.7
-          options: -v ${{ github.workspace }}:/opt/workspace -v /tmp/arm-linux-gnu:/opt/arm-linux-gnu
+          options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
           run: |
-            cd /opt/workspace
-            make gcc-final
+            make gcc-final -C /opt/arm-linux-gnu
 
       - name: Test toolchain
         uses: addnab/docker-run-action@v3
         with:
           image: sepen/crux:3.7
-          options: -v ${{ github.workspace }}:/opt/workspace -v /tmp/arm-linux-gnu:/opt/arm-linux-gnu
+          options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
           run: |
-            cd /opt/workspace
-            make test
+            make test -C /opt/arm-linux-gnu
 
       - name: Package toolchain
         uses: addnab/docker-run-action@v3
         with:
           image: sepen/crux:3.7
-          options: -v ${{ github.workspace }}:/opt/workspace -v /tmp/arm-linux-gnu:/opt/arm-linux-gnu
+          options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
           run: |
-            cd /opt/workspace
-            mkdir release
-            tar cvJf release/crux-toolchain-arm-linux-gnu-3.7-$(date +'%Y%m%d%H%M').tar.xz /opt/arm-linux-gnu
+            tar cvJf /opt/arm-linux-gnu/crux-toolchain-arm-linux-gnu-3.7-$(date +'%Y%m%d%H%M').tar.xz /opt/arm-linux-gnu/crosstools /opt/arm-linux-gnu/clfs
 
       - name: Release toolchain
         uses: burnett01/rsync-deployments@6.0.0
         with:
           switches: -avz
-          path: release/
+          path: /tmp/release/
           remote_path: /home/frs/project/crux-arm/toolchain/
           remote_host: frs.sourceforge.net
           remote_user: sepen
