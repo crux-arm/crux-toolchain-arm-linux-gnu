@@ -10,18 +10,18 @@ MAKEFLAGS = -j1
 # -----------------------------------------------------------------------
 # triplets
 #
-TARGET = arm-linux-gnu
+CLFS_TARGET = arm-linux-gnu
 # In the process of building the cross-compilation toolchain a local toolchain is also created.
 # To avoid confusion with any existing native compilation tools the "triplet" for this toolchain
 # has the word "cross" embedded into it.
-HOST = $(shell bash -c 'echo $$MACHTYPE' | sed 's/-[^-]*/-cross/')
+CLFS_HOST = $(shell bash -c 'echo $$MACHTYPE' | sed 's/-[^-]*/-cross/')
 
 # -----------------------------------------------------------------------
 #
 # directories
 #
 CLFS = $(shell pwd)/clfs
-CROSSTOOLS = $(shell pwd)/crosstools
+CROSSTOOLS = $(CLFS)/crosstools
 WORK = $(shell pwd)/work
 
 # -----------------------------------------------------------------------

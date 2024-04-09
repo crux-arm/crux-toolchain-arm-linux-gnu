@@ -107,7 +107,7 @@ $(CROSSTOOLS)/lib/libgmp.so: $(WORK)/build-libgmp
 		unset CXXFLAGS && \
 		CPPFLAGS=-fexceptions \
 		$(WORK)/gmp-$(LIBGMP_VERSION)/configure \
-			--build=$(HOST) \
+			--build=$(CLFS_HOST) \
 			--prefix=$(CROSSTOOLS) && \
 		make && \
 		make install && \
@@ -237,11 +237,10 @@ $(CLFS)/usr/include/libiberty.h: $(WORK)/build-binutils
 		AR=ar \
 		AS=as \
 		$(WORK)/binutils-$(BINUTILS_VERSION)/configure \
-			--target=$(TARGET) \
+			--target=$(CLFS_TARGET) \
 			--prefix=$(CROSSTOOLS) \
 			--with-sysroot=$(CLFS) \
 			--enable-shared \
-			--nfp \
 			--disable-nls \
 			--disable-multilib \
 			--disable-werror && \
@@ -289,23 +288,22 @@ $(CROSSTOOLS)/lib/gcc: $(WORK)/build-gcc-static $(WORK)/gcc-$(GCC_VERSION)
 		AR=ar \
 		LDFLAGS="-Wl,-rpath,$(CROSSTOOLS)/lib" \
 		$(WORK)/gcc-$(GCC_VERSION)/configure \
-			--build=$(HOST) \
-			--host=$(HOST) \
-			--target=$(TARGET) \
+			--build=$(CLFS_HOST) \
+			--host=$(CLFS_HOST) \
+			--target=$(CLFS_TARGET) \
 			--prefix=$(CROSSTOOLS) \
-			--libexecdir=$(CROSSTOOLS)/lib \
 			--with-sysroot=$(CLFS) \
 			--with-gmp=$(CROSSTOOLS) \
 			--with-mpfr=$(CROSSTOOLS) \
 			--with-mpc=$(CROSSTOOLS) \
 			--with-newlib \
 			--without-headers \
-			--disable-multilib \
-			--disable-nls \
 			--disable-decimal-float \
 			--disable-libgomp \
 			--disable-libmudflap \
 			--disable-libssp \
+			--disable-multilib \
+			--disable-nls \
 			--disable-shared \
 			--disable-threads \
 			--enable-languages=c,c++ \
@@ -400,14 +398,13 @@ $(CLFS)/usr/lib/libc.so: $(WORK)/build-glibc $(WORK)/glibc-$(GLIBC_VERSION)
 		unset CFLAGS && \
 		unset CXXFLAGS && \
 		BUILD_CC="gcc" \
-		CC="$(TARGET)-gcc" \
-		AR="$(TARGET)-ar" \
-		RANLIB="$(TARGET)-ranlib" \
+		CC="$(CLFS_TARGET)-gcc" \
+		AR="$(CLFS_TARGET)-ar" \
+		RANLIB="$(CLFS_TARGET)-ranlib" \
 		$(WORK)/glibc-$(GLIBC_VERSION)/configure \
-			--host=$(TARGET) \
-			--build=$(HOST) \
+			--host=$(CLFS_TARGET) \
+			--build=$(CLFS_HOST) \
 			--prefix=/usr \
-			--libexecdir=/usr/lib/glibc \
 			--disable-profile \
 			--enable-add-ons \
 			--with-tls \
@@ -450,9 +447,9 @@ $(CLFS)/lib/gcc: $(WORK)/build-gcc-final $(WORK)/gcc-$(GCC_VERSION)
 		AR=ar \
 		LDFLAGS="-Wl,-rpath,$(CROSSTOOLS)/lib" \
 		$(WORK)/gcc-$(GCC_VERSION)/configure \
-			--build=$(HOST) \
-			--host=$(HOST) \
-			--target=$(TARGET) \
+			--build=$(CLFS_HOST) \
+			--host=$(CLFS_HOST) \
+			--target=$(CLFS_TARGET) \
 			--prefix=$(CROSSTOOLS) \
 			--libexecdir=$(CROSSTOOLS)/lib \
 			--with-sysroot=$(CLFS) \
@@ -501,7 +498,7 @@ $(WORK)/test: $(WORK)/test.c
 	unset CC && \
 	AR=ar \
 	LDFLAGS="-Wl,-rpath,$(CROSSTOOLS)/lib" \
-	$(TARGET)-gcc -O2 -pipe -Wall -o $(WORK)/test $(WORK)/test.c
+	$(CLFS_TARGET)-gcc -O2 -pipe -Wall -o $(WORK)/test $(WORK)/test.c
 	[ "`file -b $(WORK)/test | cut -d',' -f2 | sed 's| ||g'`" = "ARM"  ] || exit 1
 	touch $(WORK)/test
 
