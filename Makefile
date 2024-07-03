@@ -55,12 +55,12 @@ download: \
 # linux-headers
 #
 
-$(WORK)/linux-$(KERNEL_HEADERS_VERSION).tar.bz2:
-	$(CURL_CMD) -o $(WORK)/linux-$(KERNEL_HEADERS_VERSION).tar.bz2 \
-		https://cdn.kernel.org/pub/linux/kernel/v3.x/linux-$(KERNEL_HEADERS_VERSION).tar.bz2
+$(WORK)/linux-$(KERNEL_HEADERS_VERSION).tar.gz:
+	$(CURL_CMD) -o $(WORK)/linux-$(KERNEL_HEADERS_VERSION).tar.gz \
+		https://cdn.kernel.org/pub/linux/kernel/v3.x/linux-$(KERNEL_HEADERS_VERSION).tar.gz
 
-$(WORK)/linux-$(KERNEL_HEADERS_VERSION): $(WORK)/linux-$(KERNEL_HEADERS_VERSION).tar.bz2
-	tar -C $(WORK) -xvf $(WORK)/linux-$(KERNEL_HEADERS_VERSION).tar.bz2
+$(WORK)/linux-$(KERNEL_HEADERS_VERSION): $(WORK)/linux-$(KERNEL_HEADERS_VERSION).tar.gz
+	tar -C $(WORK) -xvf $(WORK)/linux-$(KERNEL_HEADERS_VERSION).tar.gz
 	touch $(WORK)/linux-$(KERNEL_HEADERS_VERSION)
 
 $(CROSS_SYSROOT)/usr/include/asm: $(WORK)/linux-$(KERNEL_HEADERS_VERSION)
