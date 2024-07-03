@@ -57,7 +57,7 @@ download: \
 
 $(WORK)/linux-$(KERNEL_HEADERS_VERSION).tar.bz2:
 	$(CURL_CMD) -o $(WORK)/linux-$(KERNEL_HEADERS_VERSION).tar.bz2 \
-		https://mirrors.edge.kernel.org/pub/linux/kernel/v3.x/linux-$(KERNEL_HEADERS_VERSION).tar.bz2
+		https://cdn.kernel.org/pub/linux/kernel/v3.x/linux-$(KERNEL_HEADERS_VERSION).tar.bz2
 
 $(WORK)/linux-$(KERNEL_HEADERS_VERSION): $(WORK)/linux-$(KERNEL_HEADERS_VERSION).tar.bz2
 	tar -C $(WORK) -xvf $(WORK)/linux-$(KERNEL_HEADERS_VERSION).tar.bz2
