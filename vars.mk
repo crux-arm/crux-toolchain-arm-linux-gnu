@@ -20,8 +20,8 @@ CLFS_HOST = $(shell bash -c 'echo $$MACHTYPE' | sed 's/-[^-]*/-cross/')
 #
 # directories
 #
-CLFS = $(shell pwd)/clfs
-CROSSTOOLS = $(CLFS)/crosstools
+CROSS_SYSROOT = $(shell pwd)/cross-sysroot
+CROSS_TOOLS = $(shell pwd)/cross-tools
 WORK = $(shell pwd)/work
 
 # -----------------------------------------------------------------------
@@ -30,7 +30,7 @@ WORK = $(shell pwd)/work
 #
 # Use kernel 3.x version to provide support for input events
 # For example, EVIOCGPROP definition was added in 3.x and its required for tslib
-KERNEL_HEADERS_VERSION = 3.1.10
+KERNEL_HEADERS_VERSION = 3.16.85
 LIBGMP_VERSION = 6.3.0
 LIBMPFR_VERSION = 4.2.1
 LIBMPC_VERSION = 1.3.1

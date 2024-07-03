@@ -63,17 +63,17 @@ $(WORK)/linux-$(KERNEL_HEADERS_VERSION): $(WORK)/linux-$(KERNEL_HEADERS_VERSION)
 	tar -C $(WORK) -xvf $(WORK)/linux-$(KERNEL_HEADERS_VERSION).tar.bz2
 	touch $(WORK)/linux-$(KERNEL_HEADERS_VERSION)
 
-$(CLFS)/usr/include/asm: $(WORK)/linux-$(KERNEL_HEADERS_VERSION)
+$(CROSS_SYSROOT)/usr/include/asm: $(WORK)/linux-$(KERNEL_HEADERS_VERSION)
 	@echo "[`date +'%F %T'`] Building linux-headers"
-	mkdir -p $(CLFS)/usr/include
+	mkdir -p $(CROSS_SYSROOT)/usr/include
 	cd $(WORK)/linux-$(KERNEL_HEADERS_VERSION) && \
 		make mrproper && \
 		make ARCH=arm headers_check && \
-		make ARCH=arm INSTALL_HDR_PATH=$(CLFS)/usr headers_install
-	touch $(CLFS)/usr/include/asm
+		make ARCH=arm INSTALL_HDR_PATH=$(CROSS_SYSROOT)/usr headers_install
+	touch $(CROSS_SYSROOT)/usr/include/asm
 
 .PHONY: linux-headers
-linux-headers: $(CLFS)/usr/include/asm
+linux-headers: $(CROSS_SYSROOT)/usr/include/asm
 
 .PHONY: linux-headers-clean
 linux-headers-clean:
@@ -100,22 +100,22 @@ $(WORK)/build-libgmp: $(WORK)/gmp-$(LIBGMP_VERSION)
 	mkdir -p $(WORK)/build-libgmp
 	touch $(WORK)/build-libgmp
 
-$(CROSSTOOLS)/lib/libgmp.so: $(WORK)/build-libgmp
+$(CROSS_TOOLS)/lib/libgmp.so: $(WORK)/build-libgmp
 	@echo "[`date +'%F %T'`] Building libgmp"
 	cd $(WORK)/build-libgmp && \
 		unset CFLAGS && \
 		unset CXXFLAGS && \
 		CPPFLAGS=-fexceptions \
 		$(WORK)/gmp-$(LIBGMP_VERSION)/configure \
-			--build=$(CLFS_HOST) \
-			--prefix=$(CROSSTOOLS) && \
+			--build=$(CROSS_HOST) \
+			--prefix=$(CROSS_TOOLS) && \
 		make && \
 		make install && \
-		rm -rf $(CROSSTOOLS)/share
-	touch $(CROSSTOOLS)/lib/libgmp.so
+		rm -rf $(CROSS_TOOLS)/share
+	touch $(CROSS_TOOLS)/lib/libgmp.so
 
 .PHONY: libgmp
-libgmp: $(CROSSTOOLS)/lib/libgmp.so
+libgmp: $(CROSS_TOOLS)/lib/libgmp.so
 
 .PHONY: libgmp-clean
 libgmp-clean:
@@ -142,23 +142,23 @@ $(WORK)/build-libmpfr: $(WORK)/mpfr-$(LIBMPFR_VERSION)
 	mkdir -p $(WORK)/build-libmpfr
 	touch $(WORK)/build-libmpfr
 
-$(CROSSTOOLS)/lib/libmpfr.so: $(WORK)/build-libmpfr
+$(CROSS_TOOLS)/lib/libmpfr.so: $(WORK)/build-libmpfr
 	@echo "[`date +'%F %T'`] Building libmpfr"
 	cd $(WORK)/build-libmpfr && \
 		unset CFLAGS && \
 		unset CXXFLAGS && \
-		LDFLAGS="-Wl,-rpath,$(CROSSTOOLS)/lib" && \
+		LDFLAGS="-Wl,-rpath,$(CROSS_TOOLS)/lib" && \
 		$(WORK)/mpfr-$(LIBMPFR_VERSION)/configure \
-			--prefix=$(CROSSTOOLS) \
+			--prefix=$(CROSS_TOOLS) \
 			--enable-shared \
-			--with-gmp=$(CROSSTOOLS) && \
+			--with-gmp=$(CROSS_TOOLS) && \
 		make && \
 		make install && \
-		rm -rf $(CROSSTOOLS)/share
-	touch $(CROSSTOOLS)/lib/libmpfr.so
+		rm -rf $(CROSS_TOOLS)/share
+	touch $(CROSS_TOOLS)/lib/libmpfr.so
 
 .PHONY: libmpfr
-libmpfr: libgmp $(CROSSTOOLS)/lib/libmpfr.so
+libmpfr: libgmp $(CROSS_TOOLS)/lib/libmpfr.so
 
 .PHONY: libmpfr-clean
 libmpfr-clean:
@@ -185,22 +185,22 @@ $(WORK)/build-libmpc: $(WORK)/mpc-$(LIBMPC_VERSION)
 	mkdir -p $(WORK)/build-libmpc
 	touch $(WORK)/build-libmpc
 
-$(CROSSTOOLS)/lib/libmpc.so: $(WORK)/build-libmpc
+$(CROSS_TOOLS)/lib/libmpc.so: $(WORK)/build-libmpc
 	@echo "[`date +'%F %T'`] Building libmpc"
 	cd $(WORK)/build-libmpc && \
 		unset CFLAGS && \
 		unset CXXFLAGS && \
-		LDFLAGS="-Wl,-rpath,$(CROSSTOOLS)/lib" && \
+		LDFLAGS="-Wl,-rpath,$(CROSS_TOOLS)/lib" && \
 		$(WORK)/mpc-$(LIBMPC_VERSION)/configure \
-			--prefix=$(CROSSTOOLS) \
-			--with-gmp=$(CROSSTOOLS) \
-			--with-mpfr=$(CROSSTOOLS) && \
+			--prefix=$(CROSS_TOOLS) \
+			--with-gmp=$(CROSS_TOOLS) \
+			--with-mpfr=$(CROSS_TOOLS) && \
 		make && \
 		make install
-	touch $(CROSSTOOLS)/lib/libmpc.so
+	touch $(CROSS_TOOLS)/lib/libmpc.so
 
 .PHONY: libmpc
-libmpc: libmpfr $(CROSSTOOLS)/lib/libmpc.so
+libmpc: libmpfr $(CROSS_TOOLS)/lib/libmpc.so
 
 .PHONY: libmpc-clean
 libmpc-clean:
@@ -229,7 +229,7 @@ $(WORK)/build-binutils: $(WORK)/binutils-$(BINUTILS_VERSION)
 	mkdir -p $(WORK)/build-binutils
 	touch $(WORK)/build-binutils
 
-$(CLFS)/usr/include/libiberty.h: $(WORK)/build-binutils
+$(CROSS_SYSROOT)/usr/include/libiberty.h: $(WORK)/build-binutils
 	@echo "[`date +'%F %T'`] Building binutils"
 	cd $(WORK)/build-binutils && \
 		unset CFLAGS && \
@@ -237,9 +237,9 @@ $(CLFS)/usr/include/libiberty.h: $(WORK)/build-binutils
 		AR=ar \
 		AS=as \
 		$(WORK)/binutils-$(BINUTILS_VERSION)/configure \
-			--target=$(CLFS_TARGET) \
-			--prefix=$(CROSSTOOLS) \
-			--with-sysroot=$(CLFS) \
+			--target=$(CROSS_TARGET) \
+			--prefix=$(CROSS_TOOLS) \
+			--with-sysroot=$(CROSS_SYSROOT) \
 			--enable-shared \
 			--disable-nls \
 			--disable-multilib \
@@ -247,12 +247,12 @@ $(CLFS)/usr/include/libiberty.h: $(WORK)/build-binutils
 		make configure-host && \
 		make && \
 		make install && \
-		rm -rf $(CROSSTOOLS)/share
-	cp -va $(WORK)/binutils-$(BINUTILS_VERSION)/include/libiberty.h $(CLFS)/usr/include
-	touch $(CLFS)/usr/include/libiberty.h
+		rm -rf $(CROSS_TOOLS)/share
+	cp -va $(WORK)/binutils-$(BINUTILS_VERSION)/include/libiberty.h $(CROSS_SYSROOT)/usr/include
+	touch $(CROSS_SYSROOT)/usr/include/libiberty.h
 
 .PHONY: binutils
-binutils: linux-headers $(CLFS)/usr/include/libiberty.h
+binutils: linux-headers $(CROSS_SYSROOT)/usr/include/libiberty.h
 
 .PHONY: binutils-clean
 binutils-clean:
@@ -280,22 +280,23 @@ $(WORK)/build-gcc-static: $(WORK)/gcc-$(GCC_VERSION)
 	mkdir -p $(WORK)/build-gcc-static
 	touch $(WORK)/build-gcc-static
 
-$(CROSSTOOLS)/lib/gcc: $(WORK)/build-gcc-static $(WORK)/gcc-$(GCC_VERSION)
+$(CROSS_TOOLS)/lib/gcc: $(WORK)/build-gcc-static $(WORK)/gcc-$(GCC_VERSION)
 	@echo "[`date +'%F %T'`] Building gcc-static"
 	cd $(WORK)/build-gcc-static && \
 		unset CXXFLAGS && \
 		CFLAGS='-fgnu89-inline' \
 		AR=ar \
-		LDFLAGS="-Wl,-rpath,$(CROSSTOOLS)/lib" \
+		LDFLAGS="-Wl,-rpath,$(CROSS_TOOLS)/lib" \
 		$(WORK)/gcc-$(GCC_VERSION)/configure \
-			--build=$(CLFS_HOST) \
-			--host=$(CLFS_HOST) \
-			--target=$(CLFS_TARGET) \
-			--prefix=$(CROSSTOOLS) \
-			--with-sysroot=$(CLFS) \
-			--with-gmp=$(CROSSTOOLS) \
-			--with-mpfr=$(CROSSTOOLS) \
-			--with-mpc=$(CROSSTOOLS) \
+			--build=$(CROSS_HOST) \
+			--host=$(CROSS_HOST) \
+			--target=$(CROSS_TARGET) \
+			--prefix=$(CROSS_TOOLS) \
+			--libexecdir=$(CROSS_TOOLS)/lib \
+			--with-sysroot=$(CROSS_SYSROOT) \
+			--with-gmp=$(CROSS_TOOLS) \
+			--with-mpfr=$(CROSS_TOOLS) \
+			--with-mpc=$(CROSS_TOOLS) \
 			--with-newlib \
 			--without-headers \
 			--disable-decimal-float \
@@ -310,10 +311,10 @@ $(CROSSTOOLS)/lib/gcc: $(WORK)/build-gcc-static $(WORK)/gcc-$(GCC_VERSION)
 			--enable-obsolete && \
 		make all-gcc all-target-libgcc && \
 		make install-gcc install-target-libgcc
-	touch $(CROSSTOOLS)/lib/gcc
+	touch $(CROSS_TOOLS)/lib/gcc
 
 .PHONY: gcc-static
-gcc-static: linux-headers libgmp libmpfr libmpc binutils $(CROSSTOOLS)/lib/gcc
+gcc-static: linux-headers libgmp libmpfr libmpc binutils $(CROSS_TOOLS)/lib/gcc
 
 .PHONY: gcc-static-clean
 gcc-static-clean:
@@ -340,18 +341,18 @@ $(WORK)/build-make: $(WORK)/make-$(MAKE_VERSION)
 	mkdir -p $(WORK)/build-make
 	touch $(WORK)/build-make
 
-$(CROSSTOOLS)/bin/make: $(WORK)/build-make
+$(CROSS_TOOLS)/bin/make: $(WORK)/build-make
 	@echo "[`date +'%F %T'`] Building make"
 	cd $(WORK)/build-make && \
-		export PATH=$(CROSSTOOLS)/bin:$$PATH && \
+		export PATH=$(CROSS_TOOLS)/bin:$$PATH && \
 		$(WORK)/make-$(MAKE_VERSION)/configure \
 			--prefix=/usr && \
 		make && \
-		install -D -m 0755 make $(CROSSTOOLS)/bin/make
-	touch $(CROSSTOOLS)/bin/make
+		install -D -m 0755 make $(CROSS_TOOLS)/bin/make
+	touch $(CROSS_TOOLS)/bin/make
 
 .PHONY: make
-make: $(CROSSTOOLS)/bin/make
+make: $(CROSS_TOOLS)/bin/make
 
 .PHONY: make-clean
 make-clean:
@@ -387,38 +388,38 @@ $(WORK)/build-glibc: $(WORK)/glibc-$(GLIBC_VERSION)
 	mkdir -p $(WORK)/build-glibc
 	touch $(WORK)/build-glibc
 	
-$(CLFS)/usr/lib/libc.so: $(WORK)/build-glibc $(WORK)/glibc-$(GLIBC_VERSION)
+$(CROSS_SYSROOT)/usr/lib/libc.so: $(WORK)/build-glibc $(WORK)/glibc-$(GLIBC_VERSION)
 	@echo "[`date +'%F %T'`] Building glibc"
 	cd $(WORK)/build-glibc && \
-		export PATH=$(CROSSTOOLS)/bin:$$PATH && \
+		export PATH=$(CROSS_TOOLS)/bin:$$PATH && \
 		echo "libc_cv_forced_unwind=yes" > config.cache && \
 		echo "libc_cv_c_cleanup=yes" >> config.cache && \
 		echo "libc_cv_gnu89_inline=yes" >> config.cache && \
-		echo "install_root=$(CLFS)" > configparms && \
+		echo "install_root=$(CROSS_SYSROOT)" > configparms && \
 		unset CFLAGS && \
 		unset CXXFLAGS && \
 		BUILD_CC="gcc" \
-		CC="$(CLFS_TARGET)-gcc" \
-		AR="$(CLFS_TARGET)-ar" \
-		RANLIB="$(CLFS_TARGET)-ranlib" \
+		CC="$(CROSS_TARGET)-gcc" \
+		AR="$(CROSS_TARGET)-ar" \
+		RANLIB="$(CROSS_TARGET)-ranlib" \
 		$(WORK)/glibc-$(GLIBC_VERSION)/configure \
-			--host=$(CLFS_TARGET) \
-			--build=$(CLFS_HOST) \
+			--host=$(CROSS_TARGET) \
+			--build=$(CROSS_HOST) \
 			--prefix=/usr \
 			--disable-profile \
 			--enable-add-ons \
 			--with-tls \
 			--enable-kernel=2.6.0 \
 			--with-__thread \
-			--with-binutils=$(CROSSTOOLS)/bin \
-			--with-headers=$(CLFS)/usr/include \
+			--with-binutils=$(CROSS_TOOLS)/bin \
+			--with-headers=$(CROSS_SYSROOT)/usr/include \
 			--cache-file=config.cache && \
 		make && \
 		make install
-	touch $(CLFS)/usr/lib/libc.so
+	touch $(CROSS_SYSROOT)/usr/lib/libc.so
 
 .PHONY: glibc
-glibc: linux-headers binutils gcc-static make $(CLFS)/usr/lib/libc.so
+glibc: linux-headers binutils gcc-static make $(CROSS_SYSROOT)/usr/lib/libc.so
 
 .PHONY: glibc-clean
 glibc-clean:
@@ -437,25 +438,25 @@ $(WORK)/build-gcc-final: $(WORK)/gcc-$(GCC_VERSION)
 	mkdir -p $(WORK)/build-gcc-final
 	touch $(WORK)/build-gcc-final
 
-$(CLFS)/lib/gcc: $(WORK)/build-gcc-final $(WORK)/gcc-$(GCC_VERSION)
+$(CROSS_SYSROOT)/lib/gcc: $(WORK)/build-gcc-final $(WORK)/gcc-$(GCC_VERSION)
 	@echo "[`date +'%F %T'`] Building gcc-final"
 	cd $(WORK)/build-gcc-final && \
-		export PATH=$(CROSSTOOLS)/bin:$$PATH && \
+		export PATH=$(CROSS_TOOLS)/bin:$$PATH && \
 		unset CC && \
 		unset CXXFLAGS && \
 		CFLAGS='-fgnu89-inline' \
 		AR=ar \
-		LDFLAGS="-Wl,-rpath,$(CROSSTOOLS)/lib" \
+		LDFLAGS="-Wl,-rpath,$(CROSS_TOOLS)/lib" \
 		$(WORK)/gcc-$(GCC_VERSION)/configure \
-			--build=$(CLFS_HOST) \
-			--host=$(CLFS_HOST) \
-			--target=$(CLFS_TARGET) \
-			--prefix=$(CROSSTOOLS) \
-			--libexecdir=$(CROSSTOOLS)/lib \
-			--with-sysroot=$(CLFS) \
-			--with-gmp=$(CROSSTOOLS) \
-			--with-mpfr=$(CROSSTOOLS) \
-			--with-mpc=$(CROSSTOOLS) \
+			--build=$(CROSS_HOST) \
+			--host=$(CROSS_HOST) \
+			--target=$(CROSS_TARGET) \
+			--prefix=$(CROSS_TOOLS) \
+			--libexecdir=$(CROSS_TOOLS)/lib \
+			--with-sysroot=$(CROSS_SYSROOT) \
+			--with-gmp=$(CROSS_TOOLS) \
+			--with-mpfr=$(CROSS_TOOLS) \
+			--with-mpc=$(CROSS_TOOLS) \
 			--without-headers \
 			--disable-multilib \
 			--disable-nls \
@@ -464,7 +465,7 @@ $(CLFS)/lib/gcc: $(WORK)/build-gcc-final $(WORK)/gcc-$(GCC_VERSION)
 			--disable-libmudflap \
 			--disable-libssp \
 			--disable-shared \
-			--disable-thread \
+			--disable-threads \
 			--enable-__cxa_atexit \
 			--enable-c99 \
 			--enable-long-long \
@@ -472,10 +473,10 @@ $(CLFS)/lib/gcc: $(WORK)/build-gcc-final $(WORK)/gcc-$(GCC_VERSION)
 			--enable-obsolete && \
 		make && \
 		make install
-	touch $(CLFS)/lib/gcc
+	touch $(CROSS_SYSROOT)/lib/gcc
 
 .PHONY: gcc-final
-gcc-final: libgmp libmpfr glibc $(CLFS)/lib/gcc
+gcc-final: libgmp libmpfr glibc $(CROSS_SYSROOT)/lib/gcc
 
 .PHONY: gcc-final-clean
 gcc-final-clean:
@@ -492,13 +493,13 @@ gcc-final-distclean: gcc-final-clean
 
 $(WORK)/test: $(WORK)/test.c
 	@echo "[`date +'%F %T'`] Testing toolchain"
-	export PATH=$(CROSSTOOLS)/bin:$$PATH && \
+	export PATH=$(CROSS_TOOLS)/bin:$$PATH && \
 	unset CFLAGS && \
 	unset CXXFLAGS && \
 	unset CC && \
 	AR=ar \
-	LDFLAGS="-Wl,-rpath,$(CROSSTOOLS)/lib" \
-	$(CLFS_TARGET)-gcc -O2 -pipe -Wall -o $(WORK)/test $(WORK)/test.c
+	LDFLAGS="-Wl,-rpath,$(CROSS_TOOLS)/lib" \
+	$(CROSS_TARGET)-gcc -O2 -pipe -Wall -o $(WORK)/test $(WORK)/test.c
 	[ "`file -b $(WORK)/test | cut -d',' -f2 | sed 's| ||g'`" = "ARM"  ] || exit 1
 	touch $(WORK)/test
 

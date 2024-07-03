@@ -18,8 +18,8 @@ jobs:
 
       - name: Setup toolchain vars.mk
         run: |
-          sed 's|^CLFS.*|CLFS = /opt/arm-linux-gnu/clfs|' -i vars.mk
-          sed 's|^CROSSTOOLS.*|CROSSTOOLS = /opt/arm-linux-gnu/crosstools|' -i vars.mk
+          sed 's|^CROSS_SYSROOT.*|CLFS = /opt/arm-linux-gnu/cross-sysroot|' -i vars.mk
+          sed 's|^CROSS_TOOLS.*|CROSS_TOOLS = /opt/arm-linux-gnu/cross-tools|' -i vars.mk
 
       - name: Download source files
         run: |
@@ -115,7 +115,7 @@ jobs:
           options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
           run: |
             mkdir /opt/arm-linux-gnu/release
-            tar cvJf /opt/arm-linux-gnu/release/crux-toolchain-arm-linux-gnu-3.7-$(date +'%Y%m%d%H%M').tar.xz /opt/arm-linux-gnu/crosstools /opt/arm-linux-gnu/clfs
+            tar cvJf /opt/arm-linux-gnu/release/crux-toolchain-arm-linux-gnu-3.7-$(date +'%Y%m%d%H%M').tar.xz /opt/arm-linux-gnu/cross-sysroot /opt/arm-linux-gnu/cross-tools
 
       - name: Upload toolchain
         uses: burnett01/rsync-deployments@6.0.0
