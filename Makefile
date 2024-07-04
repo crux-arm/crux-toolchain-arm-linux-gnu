@@ -344,7 +344,6 @@ $(WORK)/build-make: $(WORK)/make-$(MAKE_VERSION)
 $(CROSS_TOOLS)/bin/make: $(WORK)/build-make
 	@echo "[`date +'%F %T'`] Building make"
 	cd $(WORK)/build-make && \
-		export PATH=$(CROSS_TOOLS)/bin:$$PATH && \
 		$(WORK)/make-$(MAKE_VERSION)/configure \
 			--prefix=/usr && \
 		make && \
