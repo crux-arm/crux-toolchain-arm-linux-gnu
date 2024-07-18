@@ -16,11 +16,6 @@ jobs:
       - name: Clone repo
         uses: actions/checkout@v4
 
-      - name: Setup toolchain vars.mk
-        run: |
-          sed 's|^CROSS_SYSROOT.*|CLFS = /opt/arm-linux-gnu/cross-sysroot|' -i vars.mk
-          sed 's|^CROSS_TOOLS.*|CROSS_TOOLS = /opt/arm-linux-gnu/cross-tools|' -i vars.mk
-
       - name: Download source files
         run: |
           make download
@@ -115,7 +110,8 @@ jobs:
           options: -v ${{ github.workspace }}:/opt/arm-linux-gnu
           run: |
             mkdir /opt/arm-linux-gnu/release
-            tar cvJf /opt/arm-linux-gnu/release/crux-toolchain-arm-linux-gnu-3.7-$(date +'%Y%m%d%H%M').tar.xz /opt/arm-linux-gnu/cross-sysroot /opt/arm-linux-gnu/cross-tools
+            tar cvJf /opt/arm-linux-gnu/release/crux-toolchain-arm-linux-gnu-3.7-$(date +'%Y%m%d%H%M').tar.xz \
+              /opt/arm-linux-gnu/cross-sysroot /opt/arm-linux-gnu/cross-tools
 
       - name: Upload toolchain
         uses: burnett01/rsync-deployments@6.0.0
