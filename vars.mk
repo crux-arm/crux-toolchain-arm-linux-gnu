@@ -1,5 +1,5 @@
 #
-# toolchain-arm-linux-gnu/vars.mk
+# vars.mk
 #
 
 # -----------------------------------------------------------------------
@@ -34,7 +34,7 @@ KERNEL_HEADERS_VERSION = 3.16.85
 LIBGMP_VERSION = 6.3.0
 LIBMPFR_VERSION = 4.2.1
 LIBMPC_VERSION = 1.3.1
-BINUTILS_VERSION = 2.23.2
+BINUTILS_VERSION = 2.22
 # Use version 4.3 since glibc won't build with recent GNU Make (4.4 or above)
 MAKE_VERSION = 4.3
 # This is the last version released before dropping support for ARMv4 devices

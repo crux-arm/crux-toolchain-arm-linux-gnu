@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------
 #
-# toolchain-arm-linux-gnu/Makefile
+# Makefile
 #
 
 
@@ -108,7 +108,8 @@ $(CROSS_TOOLS)/lib/libgmp.so: $(WORK)/build-libgmp
 		CPPFLAGS=-fexceptions \
 		$(WORK)/gmp-$(LIBGMP_VERSION)/configure \
 			--build=$(CROSS_HOST) \
-			--prefix=$(CROSS_TOOLS) && \
+			--prefix=$(CROSS_TOOLS) \
+			--enable-cxx && \
 		make && \
 		make install && \
 		rm -rf $(CROSS_TOOLS)/share
@@ -209,7 +210,6 @@ libmpc-clean:
 .PHONY: libmpc-distclean
 libmpc-distclean: libmpc-clean
 	rm -vrf $(WORK)/mpc-$(LIBMPC_VERSION).tar.gz
-
 
 # -----------------------------------------------------------------------
 #
